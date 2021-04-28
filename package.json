@@ -1,13 +1,14 @@
 {
-  "name": "",
-  "version": "0.0.0",
-  "description": "<%= description %>",
+  "name": "saichitisalutatantissimo.it",
+  "private": true,
+  "version": "0.0.1",
+  "description": "Chi?",
   "license": "MIT",
-  "repository": "https://github.com/<%= githubUsername %>/<%= title %>",
+  "repository": "https://github.com/marcofugaro/saichitisalutatantissimo.it",
   "author": {
-    "name": "<%= name %>",
-    "email": "<%= email %>",
-    "url": "<%= website %>"
+    "name": "Marco Fugaro",
+    "email": "marco.fugaro@gmail.com",
+    "url": "http://marcofuga.ro"
   },
   "scripts": {
     "postinstall": "yarn install-tree",
@@ -38,6 +39,8 @@
     "controls-state": "^2.0.0",
     "datauritoblob": "^1.0.0",
     "detect-gpu": "^3.0.0",
+    "glsl-aastep": "^1.0.1",
+    "gsap": "^3.6.1",
     "image-promise": "^7.0.1",
     "lodash": "^4.17.20",
     "lodash-es": "^4.17.20",
