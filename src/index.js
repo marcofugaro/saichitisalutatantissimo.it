@@ -1,4 +1,4 @@
-// import { EffectPass, VignetteEffect } from 'postprocessing'
+import { EffectPass, VignetteEffect, BloomEffect, BlendFunction, KernelSize } from 'postprocessing'
 import * as THREE from 'three'
 import WebGLApp from './lib/WebGLApp'
 import assets from './lib/AssetManager'
@@ -21,7 +21,7 @@ const webgl = new WebGLApp({
   // https://www.donmccurdy.com/2020/06/17/color-management-in-threejs/
   gamma: true,
   // enable postprocessing
-  // postprocessing: true,
+  postprocessing: true,
   // show the fps counter from stats.js
   showFps: window.DEBUG,
   cameraPosition: new THREE.Vector3(0, 0, 10),
@@ -29,7 +29,7 @@ const webgl = new WebGLApp({
   orbitControls: window.DEBUG,
   // Add the controls pane inputs
   controls: {
-    text: { color: '#cc43c7' },
+    text: { color: '#df20d9' },
     background: {
       color1: '#95ee11',
       color2: '#d32222',
@@ -62,7 +62,15 @@ assets.load({ renderer: webgl.renderer }).then(() => {
 
   // postprocessing
   // add an existing effect from the postprocessing library
-  // webgl.composer.addPass(new EffectPass(webgl.camera, new VignetteEffect()))
+  const vignette = new VignetteEffect({ darkness: 0.4 })
+  const bloom = new BloomEffect({
+    blendFunction: BlendFunction.ADD,
+    kernelSize: KernelSize.SMALL,
+    luminanceThreshold: 0.7,
+    luminanceSmoothing: 0.25,
+    height: 480,
+  })
+  webgl.composer.addPass(new EffectPass(webgl.camera, bloom, vignette))
 
   // show canvas
   webgl.canvas.style.visibility = ''

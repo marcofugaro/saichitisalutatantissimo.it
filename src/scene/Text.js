@@ -9,7 +9,9 @@ export default class Text extends THREE.Group {
     this.webgl = webgl
     this.options = options
 
-    const material = new THREE.MeshStandardMaterial({ color: webgl.controls.text.color })
+    const material = new THREE.MeshStandardMaterial({
+      color: new THREE.Color(webgl.controls.text.color),
+    })
 
     wireValue(material, () => webgl.controls.text.color)
 
@@ -48,10 +50,14 @@ export default class Text extends THREE.Group {
 
     this.add(group)
 
-    const forwardTime = 0.5
-    const backTime = 0.65
+    // set scale based on width of the window
+    if (window.innerWidth < 1440) {
+      this.scale.setScalar(this.computeScale())
+    }
 
     // animation
+    const forwardTime = 0.5
+    const backTime = 0.65
     const zAmplitude = size * 2
     const tl = gsap
       .timeline({ repeat: -1 })
@@ -76,5 +82,32 @@ export default class Text extends THREE.Group {
       .to(this.rotation, { z: 0, duration: backTime, ease: 'power1.inOut' }, 'middle')
       .to(this.rotation, { z: -rotZAmplitude, duration: forwardTime, ease: 'power1.inOut' }, 'end')
       .to(this.rotation, { z: 0, duration: backTime, ease: 'power1.inOut' }, 'middle2')
+  }
+
+  computeScale() {
+    const x = window.innerWidth // input
+
+    // https://content.byui.edu/file/b8b83119-9acc-4a7b-bc84-efacf9043998/1/Math-2-11-2.html
+    // x is window width
+    // y is scale
+    // 1 is desktop
+    // 2 is mobile
+    const x1 = 1440
+    const x2 = 375
+    const y1 = 1
+    const y2 = 0.33
+    const m = (y2 - y1) / (x2 - x1) // slope
+    const b = y1 - m * x1
+    const y = m * x + b
+
+    return y // output
+  }
+
+  resize() {
+    if (window.innerWidth < 1440) {
+      this.scale.setScalar(this.computeScale())
+    } else {
+      this.scale.setScalar(1)
+    }
   }
 }

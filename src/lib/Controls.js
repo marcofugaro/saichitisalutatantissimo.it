@@ -244,7 +244,7 @@ function extractAccessor(fnString) {
   return fnString.trim()
 }
 
-export function wireValue(object, fn) {
+export function wireValue(object, fn, { gamma = false } = {}) {
   const fnString = fn.toString()
   const accessor = extractAccessor(fnString)
 
@@ -263,13 +263,13 @@ export function wireValue(object, fn) {
   let value = fn()
 
   if (typeof value === 'string' && (value.startsWith('#') || value in _colorKeywords)) {
-    value = new THREE.Color(value)
+    value = gamma ? new THREE.Color(value).convertSRGBToLinear() : new THREE.Color(value)
   }
 
   return value
 }
 
-export function wireUniform(object, fn) {
+export function wireUniform(object, fn, { gamma = false } = {}) {
   const fnString = fn.toString()
   const accessor = extractAccessor(fnString)
 
@@ -288,7 +288,7 @@ export function wireUniform(object, fn) {
   let value = fn()
 
   if (typeof value === 'string' && (value.startsWith('#') || value in _colorKeywords)) {
-    value = new THREE.Color(value)
+    value = gamma ? new THREE.Color(value).convertSRGBToLinear() : new THREE.Color(value)
   }
 
   return { value }

@@ -1,8 +1,10 @@
 import * as THREE from 'three'
 import glsl from 'glslify'
-import { wireValue, wireUniform } from '../lib/Controls'
+import { wireUniform } from '../lib/Controls'
 import { visibleWidthAtZDepth, visibleHeightAtZDepth } from '../lib/three-utils'
 import { customizeFragmentShader, addDefines, addUniforms } from '../lib/customizeShader'
+
+const Z = -0.5 // the z position of the plane
 
 export default class Background extends THREE.Group {
   constructor(webgl, options = {}) {
@@ -10,12 +12,9 @@ export default class Background extends THREE.Group {
     this.webgl = webgl
     this.options = options
 
-    const z = -0.5 // the z position of the plane
-
-    const geometry = new THREE.PlaneGeometry(
-      visibleWidthAtZDepth(z, webgl.camera),
-      visibleHeightAtZDepth(z, webgl.camera)
-    )
+    this.initialWidth = visibleWidthAtZDepth(Z, webgl.camera)
+    this.initialHeight = visibleHeightAtZDepth(Z, webgl.camera)
+    const geometry = new THREE.PlaneGeometry(this.initialWidth, this.initialHeight)
     const material = new THREE.MeshBasicMaterial()
     addDefines(material, { USE_UV: '' })
     addUniforms(material, {
@@ -51,8 +50,13 @@ export default class Background extends THREE.Group {
     this.material = material
 
     const mesh = new THREE.Mesh(geometry, material)
-    mesh.position.z = z
+    mesh.position.z = Z
     this.add(mesh)
+  }
+
+  resize() {
+    this.scale.x = visibleWidthAtZDepth(Z, this.webgl.camera) / this.initialWidth
+    this.scale.y = visibleHeightAtZDepth(Z, this.webgl.camera) / this.initialHeight
   }
 
   update(dt, time) {
